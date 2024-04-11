@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Clean Blog - Start Bootstrap Theme</title>
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="css/styles.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>        
+    </head>
+    <body>
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+            <div class="container px-4 px-lg-5">
+                <a class="navbar-brand" href="index.html">소스놀이터캠프</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    Menu
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ms-auto py-4 py-lg-0">
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="index.html">Home</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="post.html">시간표</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="about.html">카드뉴스</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="board.html">자유게시판</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="post.html">Sample Post</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Page Header-->
+        <header class="masthead" style="background-image: url('assets/img/home-bg.jpg');padding-top:30px; padding-bottom:30px">
+            <div class="container position-relative px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <div class="site-heading" style="height:25px">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Main Content-->
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7" id="divRecentPosts">
+                </div>
+            </div>
+        </div>
+        <!-- Footer-->
+        <footer class="border-top">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <ul class="list-inline text-center">
+                            <li class="list-inline-item">
+                                <a href="#!">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fas fa-circle fa-stack-2x"></i>
+                                        <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="#!">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fas fa-circle fa-stack-2x"></i>
+                                        <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="#!">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fas fa-circle fa-stack-2x"></i>
+                                        <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="small text-center text-muted fst-italic">Copyright &copy; Your Website 2022</div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+    </body>
+</html>
+<script>
+    var page = null; //페이지 정보 초기화
+    function loadPost(p) {   //페이지 기반으로 전체 글을 불러오는 함수
+        page = p; 
+        $.ajax({
+            url: '/get_posts',  //Mysql에 있는 데이터를 가져오는 파이썬 flask 파일
+            type: 'GET',
+            dataType: 'json',
+            data: {"page": p},  //페이지 정보 넘기기
+            success: function(data) {
+                var posts = data;                    
+                var html = '';
+                $.each(posts.data, function(index, post) {  //json 연관 배열 형태로 받은 내용을 적절히 편집하여 HTML로 출력
+                    html += '<div class="post-preview">';
+                    html += '<a href="post.html?post_id='+post.id+'">';                    
+                    html += '<h2 class="post-title">'+post.title+'</h2>';
+                    var contents = stripHtml(post.content).substring(0,40);
+                    if(contents) {
+                        contents += ".."
+                    }
+                    html += '<h3 class="post-subtitle">'+contents+'</h3>';
+                    html += '</a>';
+                    html += '<p class="post-meta">';                
+                    html += 'Posted by <a href="#!">소스놀이터</a> <br> ';                                    
+                    html += post.created_at;                        
+                    html += '</p>';                                                            
+                    html += '</div>';                                                                            
+                    html += '<hr class="my-4" />';                                                                                            
+                });
+
+                //html += '<div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="/list">전체보기 →</a></div>';
+                //이것 대신 페이징 처리 넣기
+                var postPerPage = 9; //페이지당 글 수
+                    // posts.total_count == 총 글 수
+                    var totPage = Math.ceil(posts.total_count / postPerPage);
+                    html += generatePagination(totPage, page);                
+
+                $('#divRecentPosts').html(html);
+            }
+        });    
+    }    
+
+    $(document).ready(function(){  //웹페이지 로드된 준비 상태
+        loadPost(1); //전체 글 중 1페이지 불러오기
+    })
+
+    function stripHtml(html) {  //HTML 태그 제거
+        let doc = new DOMParser().parseFromString(html, 'text/html');
+        return doc.body.textContent || '';
+    }
+
+    function generatePagination(totalPages, currentPage) {  //페이징 HTML 생성
+        var html = '<div style="text-align:center" class="d-flex justify-content-center">';
+        var maxPages = 9; // 표시할 페이지 수
+
+        // 이전 페이지 링크 생성
+        if (currentPage == 1) {
+          html += '<span style="float:left"><a class="page-link" style="cursor:pointer; background-color:black; color:white" onclick="loadPost('+(currentPage - 1)+')">이전</a></span>';
+        }
+
+        // 페이지 링크 생성
+        var startPage = Math.max(1, currentPage - Math.floor(maxPages / 2));
+        var endPage = Math.min(totalPages, startPage + maxPages - 1);
+        for (var i = startPage; i <= endPage; i++) {
+          html += '<span style="padding-left:5px; padding-right:5px; float:left"><a class="page-link" style="cursor:pointer" onclick="loadPost(' + i + ')">' + i + '</a></span>';
+        }
+
+        // 다음 페이지 링크 생성
+        if (currentPage < totalPages) {
+           html += '<span style="float:left"><a class="page-link" style="cursor:pointer; background-color:black; color:white" onclick="loadPost('+(currentPage + 1)+')">다음</a></span>';
+        }
+
+        html += '</div>';
+
+        return html;
+    }    
+</script>

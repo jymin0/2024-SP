@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시간표</title>
+    <style>
+        table {
+            width: 70%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        td.editable {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <a href="/">메인화면 바로가기</a>
+    </div>
+    
+    <h2>2024학년도 1학기 시간표</h2>
+
+    <section>
+        <article id="timetableData">
+            <!-- Timetable will be inserted here -->
+        </article>
+    </section>
+
+    <script>
+        // Fetch timetable data from Flask backend
+        fetch('/api/timetable')
+            .then(response => response.json())
+            .then(data => {
+                const timetableData = document.getElementById('timetableData');
+
+                // Create table element
+                const table = document.createElement('table');
+
+                // Create table header
+                const th = document.createElement('th');
+                const thead = document.createElement('thead');
+                const headerRow = document.createElement('tr');
+                thead.appendChild(headerRow);
+                table.appendChild(thead);
+                th.textContent = 'time';
+                headerRow.appendChild(th);
+                const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+                days.forEach(day => {
+                    const th = document.createElement('th');
+                    th.textContent = day;
+                    headerRow.appendChild(th);
+                });
+                thead.appendChild(headerRow);
+                table.appendChild(thead);
+
+                // Create table body
+                const tbody = document.createElement('tbody');
+                const timetable = data.timetable;
+                timetable.forEach(rowData => {
+                    const row = document.createElement('tr');
+                    const cell = document.createElement('td');
+                    cell.textContent = (parseInt(rowData.id)+8) +'시';
+                    
+                    row.appendChild(cell);
+                    days.forEach(day => {
+                        const cell = document.createElement('td');
+                        cell.textContent = rowData[day.toLowerCase()];
+                        cell.classList.add('editable'); // Make cells editable
+                        cell.addEventListener('click', () => {
+                            const newValue = prompt('Enter new value:');
+                            if (newValue !== null) {
+                                // Update cell content
+                                cell.textContent = newValue;
+                                
+                                // Get cell data
+                                const id = rowData.id;
+                                const dayKey = day.toLowerCase();
+                                
+                                // Send updated data to server
+                                fetch('/api/update_timetable', { // Flask 라우트와 일치하도록 끝점을 변경
+                                    method: 'POST', // 방법을 POST로 지정
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        id: id,
+                                        day: dayKey,
+                                        value: newValue
+                                    })
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log('Success:', data);
+                                })
+                                .catch(error => {
+                                    console.error('Error updating timetable:', error);
+                                });
+                            }   
+                        });
+                        row.appendChild(cell);
+                    });
+                    tbody.appendChild(row);
+                });
+                table.appendChild(tbody);
+
+                // Append table to timetableData article
+                timetableData.appendChild(table);
+            })
+            .catch(error => console.error('Error fetching timetable:', error));
+
+
+    </script>
+</body>
+</html>

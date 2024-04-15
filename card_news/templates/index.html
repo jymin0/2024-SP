@@ -8,12 +8,52 @@
     /* CSS 스타일링 */
     body {
       font-family: Arial, sans-serif;
+      margin: 0; /* Remove default margin */
+      padding: 0; /* Remove default padding */
+    }
+    .header {
+      text-align: center;
+      padding: 20px;
+      background-color: #007bff;
+      color: #fff;
+    }
+    .header img {
+      width: 50px;
+      vertical-align: middle;
+      float: left; /* 이미지를 왼쪽에 정렬 */
+      margin-right: 10px; /* 이미지와 텍스트 사이 간격 */
+    }
+    h1 {
+      display: inline-block; /* 제목을 한 줄에 정렬하기 위해 */
+    }
+    .search-bar {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+    .search-bar input[type="text"] {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 200px;
+    }
+    .search-bar button {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 5px;
+      background-color: #007bff;
+      color: #fff;
+      cursor: pointer;
+    }
+    .search-bar button:hover {
+      background-color: #0056b3;
     }
     .news-container {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      grid-template-columns: repeat(4, minmax(200px, 1fr));
       grid-gap: 20px;
-      margin: 20px;
+      margin: 20px auto;
+      max-width: calc(100% - 40px); /* 화면 가로폭에 가득 차도록 설정 */
     }
     .news-card {
       border: 1px solid #ccc;
@@ -21,7 +61,7 @@
       overflow: hidden;
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     }
-    .news-card img {
+    .news-card img, .news-card video {
       width: 100%;
       height: auto;
     }
@@ -32,9 +72,26 @@
       font-size: 18px;
       margin-bottom: 10px;
     }
+    .instagram-link {
+      display: block;
+      text-align: center;
+      padding: 10px 0;
+      background-color: #007bff;
+      color: #fff;
+      text-decoration: none;
+    }
+    .instagram-link:hover {
+      background-color: #0056b3;
+    }
   </style>
 </head>
 <body>
+  <div class="header">
+    <!-- 이미지 -->
+    <img src="static/image0.jpg" alt="대체_텍스트">
+    <!-- 텍스트 -->
+    <h1>카드 뉴스</h1>
+  </div>
   <div class="search-bar">
     <form action="/search" method="post">
       <input type="text" name="searchInput" id="searchInput" placeholder="검색어를 입력하세요...">
@@ -42,14 +99,27 @@
     </form>
   </div>
   <div class="news-container">
-    {% for news in news_data %}
+    {% for news in image_data %}
     <div class="news-card">
       <img src="{{ url_for('static', filename=news['image']) }}" alt="{{ news['title'] }}">
       <div class="news-card-content">
         <div class="news-title">{{ news['title'] }}</div>
       </div>
       <!-- 이미지를 클릭하면 인스타그램 링크로 이동 -->
-      <a href="{{ news['instagram_link'] }}" target="_blank">인스타그램 링크로 이동</a>
+      <a class="instagram-link" href="{{ news['instagram_link'] }}" target="_blank">인스타그램 링크로 이동</a>
+    </div>
+    {% endfor %}
+    {% for news in video_data %}
+    <div class="news-card">
+      <video controls>
+        <source src="{{ url_for('static', filename=news['video']) }}" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <div class="news-card-content">
+        <div class="news-title">{{ news['title'] }}</div>
+      </div>
+      <!-- 비디오를 클릭하면 인스타그램 링크로 이동 -->
+      <a class="instagram-link" href="{{ news['instagram_link'] }}" target="_blank">인스타그램 링크로 이동</a>
     </div>
     {% endfor %}
   </div>

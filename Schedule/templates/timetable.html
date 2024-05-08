@@ -6,7 +6,7 @@
     <title>시간표</title>
     <style>
         table {
-            width: 70%;
+            width: 50%;
             border-collapse: collapse;
             margin-top: 20px;
         }
@@ -26,7 +26,20 @@
     <div>
         <a href="/">메인화면 바로가기</a>
     </div>
-    
+
+    <dl>
+      <dt>기온</dt>
+      <dd class="temperature"></dd>
+      <dt>위치</dt>
+      <dd class="place"></dd>
+      <dt>설명</dt>
+      <dd class="description"></dd>
+      <img class="icon" />
+
+    </dl>
+    <script src="{{ url_for('static', filename='weather.js') }}"></script>
+</body>
+
     <h2>2024학년도 1학기 시간표</h2>
 
     <section>

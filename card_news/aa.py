@@ -1,36 +1,33 @@
 from flask import Flask, render_template, request
+from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 
-# 이미지 데이터를 리스트 형태로 저장합니다.
-image_data = [
-    { 
-        "title": f"이미지 제목 {i}", 
-        "image": f"image{i}.jpg", 
-        "instagram_link": f"https://www.instagram.com/p/image{i}/" 
-    }
-    for i in range(1, 11)
-]
+# MySQL 설정
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = '0000'
+app.config['MYSQL_DB'] = 'mydb'
 
-# 비디오 데이터를 리스트 형태로 저장합니다.
-video_data = [
-    { 
-        "title": f"비디오 제목 {i}", 
-        "video": f"video{i}.mp4", 
-        "instagram_link": f"https://www.instagram.com/p/video{i}/" 
-    }
-    for i in range(1, 11)
-]
+mysql = MySQL(app)
 
 @app.route('/')
 def index():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM images")
+    image_data = cur.fetchall()
+    cur.execute("SELECT * FROM videos")
+    video_data = cur.fetchall()
     return render_template('index.html', image_data=image_data, video_data=video_data)
 
 @app.route('/search', methods=['POST'])
 def search():
     search_keyword = request.form['searchInput'].lower()
-    filtered_image_data = [news for news in image_data if search_keyword in news['title'].lower()]
-    filtered_video_data = [news for news in video_data if search_keyword in news['title'].lower()]
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM images WHERE title LIKE %s", ('%' + search_keyword + '%',))
+    filtered_image_data = cur.fetchall()
+    cur.execute("SELECT * FROM videos WHERE title LIKE %s", ('%' + search_keyword + '%',))
+    filtered_video_data = cur.fetchall()
     return render_template('index.html', image_data=filtered_image_data, video_data=filtered_video_data)
 
 if __name__ == '__main__':

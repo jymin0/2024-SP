@@ -101,26 +101,28 @@
   <div class="news-container">
     {% for news in image_data %}
     <div class="news-card">
-      <img src="{{ url_for('static', filename=news['image']) }}" alt="{{ news['title'] }}">
+      <img src="{{ news[3] }}" alt="{{ news[1] }}">
       <div class="news-card-content">
-        <div class="news-title">{{ news['title'] }}</div>
+        <div class="news-title">{{ news[1] }}</div>
       </div>
-      <!-- 이미지를 클릭하면 인스타그램 링크로 이동 -->
-      <a class="instagram-link" href="{{ news['instagram_link'] }}" target="_blank">인스타그램 링크로 이동</a>
+      <a class="instagram-link" href="{{ news[2] }}" target="_blank">인스타그램 링크로 이동</a>
     </div>
+    {% else %}
+    <p>No images found</p>
     {% endfor %}
     {% for news in video_data %}
     <div class="news-card">
       <video controls>
-        <source src="{{ url_for('static', filename=news['video']) }}" type="video/mp4">
+        <source src="{{ news[2] }}" type="video/mp4">
         Your browser does not support the video tag.
       </video>
       <div class="news-card-content">
-        <div class="news-title">{{ news['title'] }}</div>
+        <div class="news-title">{{ news[1] }}</div>
       </div>
-      <!-- 비디오를 클릭하면 인스타그램 링크로 이동 -->
-      <a class="instagram-link" href="{{ news['instagram_link'] }}" target="_blank">인스타그램 링크로 이동</a>
+      <a class="instagram-link" href="{{ news[3] }}" target="_blank">인스타그램 링크로 이동</a>
     </div>
+    {% else %}
+    <p>No videos found</p>
     {% endfor %}
   </div>
 </body>

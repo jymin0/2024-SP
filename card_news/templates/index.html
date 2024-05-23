@@ -48,6 +48,12 @@
     .search-bar button:hover {
       background-color: #0056b3;
     }
+    .sort-options {
+      margin-bottom: 10px;
+    }
+    .sort-options select {
+      margin-right: 10px;
+    }
     .news-container {
       display: grid;
       grid-template-columns: repeat(4, minmax(200px, 1fr));
@@ -98,6 +104,25 @@
       <button type="submit">검색</button>
     </form>
   </div>
+  <div class="sort-options">
+    <label for="sortBy">정렬 기준:</label>
+    <select name="sortBy" id="sortBy" onchange="sortResults()">
+      <option value="created_at" {% if sort_by == 'created_at' %}selected{% endif %}>최신순</option>
+      <option value="view_count" {% if sort_by == 'view_count' %}selected{% endif %}>조회순</option>
+    </select>
+    <label for="sortOrder">정렬 순서:</label>
+    <select name="sortOrder" id="sortOrder" onchange="sortResults()">
+      <option value="desc" {% if sort_order == 'desc' %}selected{% endif %}>내림차순</option>
+      <option value="asc" {% if sort_order == 'asc' %}selected{% endif %}>오름차순</option>
+    </select>
+  </div>
+  <script>
+    function sortResults() {
+      const sortBy = document.getElementById('sortBy').value;
+      const sortOrder = document.getElementById('sortOrder').value;
+      window.location.href = `/?sort_by=${sortBy}&sort_order=${sortOrder}`;
+    }
+  </script>
   <div class="news-container">
     {% for news in image_data %}
     <div class="news-card">
@@ -105,7 +130,7 @@
       <div class="news-card-content">
         <div class="news-title">{{ news[1] }}</div>
       </div>
-      <a class="instagram-link" href="{{ news[2] }}" target="_blank">인스타그램 링크로 이동</a>
+      <a class="instagram-link" href="/increment_view/{{ news[0] }}" target="_blank">인스타그램 링크로 이동</a>
     </div>
     {% else %}
     <p>No images found</p>
@@ -119,7 +144,7 @@
       <div class="news-card-content">
         <div class="news-title">{{ news[1] }}</div>
       </div>
-      <a class="instagram-link" href="{{ news[3] }}" target="_blank">인스타그램 링크로 이동</a>
+      <a class="instagram-link" href="/increment_view/{{ news[0] }}" target="_blank">인스타그램 링크로 이동</a>
     </div>
     {% else %}
     <p>No videos found</p>
@@ -127,3 +152,4 @@
   </div>
 </body>
 </html>
+
